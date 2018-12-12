@@ -1,0 +1,43 @@
+#+TITLE: Final Project
+
+This is the final project for the 2018 Image Processing Course at NTUT.
+
+* Dependencies
+
+  Following modules are required in this project. Install these packages before you go.
+
+** external dependencies
+   
+   Follow the official documentation and install these modules.
+   
+   - [[https://opencv.org/][OpenCV]]
+   - [[https://www.boost.org/][Boost]]
+   - [[https://github.com/fmtlib/fmt][fmt]]
+   - [[https://github.com/gabime/spdlog][spdlog]]
+   - [[https://github.com/HowardHinnant/date][date]]
+
+
+** git submodule dependencies
+   
+   Get the dependencies using =git submodule update=
+
+   - [[https://github.com/Flix01/imgui][imgui]]
+   - [[https://github.com/cy20lin/sweet][sweet]]
+
+* Prepare the source
+
+  #+BEGIN_SRC sh
+    git clone https://github.com/cy20lin/2018_fall_image_processing_final
+    cd 2018_fall_image_processing_final
+    git submodule update --init --recursive
+  #+END_SRC
+
+* Build the project
+
+  #+BEGIN_SRC sh
+    cd 2018_fall_image_processing_final
+    mkdir build
+    cd build
+    cmake .. -DCMAKE_MODULE_PATH=/path/to/required/modules;...
+    cmake --build .
+  #+END_SRC

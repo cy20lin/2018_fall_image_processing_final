@@ -1,8 +1,3 @@
-##
-## Copyright (c) 2017 ChienYu Lin
-##
-## Author: ChienYu Lin <cy20lin@gmail.com>
-##
 cmake_minimum_required (VERSION 3.1)											#	set cmake minimum version
 
 list(INSERT CMAKE_MODULE_PATH 0 "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules")
@@ -46,15 +41,15 @@ set(Boost_COMPONENTS
   )
 
 find_package(Boost REQUIRED COMPONENTS ${Boost_COMPONENTS})
-find_package(fmt CONFIG REQUIRED)
-# find_package(Date CONFIG REQUIRED)
-find_package(OpenCV)
+find_package(fmt CONFIG)
+find_package(date CONFIG)
+find_package(OpenCV REQUIRED)
 
 set(packages
   Boost
   fmt
   OpenCV
-  # Date
+  date
   )
 foreach(component ${Boost_COMPONENTS} boost)
   if(TARGET Boost::${component})
@@ -79,4 +74,4 @@ sweet_target_add(spike_cv CONFIGS OpenCV)
 
 # add_executable(a spike/cv.cpp)
 # sweet_target_add(a CONFIGS OpenCV)
-# sweet_target_add(a CONFIGS Date)
+# sweet_target_add(a CONFIGS date)
