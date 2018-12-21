@@ -27,7 +27,7 @@ void MainWindow::on_slotOpenImage_triggered()
         if(image->load(fileName))
         {
             //QImage ResizeImage = image->scaled(ui->graphicsView->size(),Qt::KeepAspectRatio);
-            QImage ResizeImage = image->scaled(ui->graphicsView->geometry().width() - 10, ui->graphicsView->geometry().height(),Qt::KeepAspectRatio);
+            QImage ResizeImage = image->scaled(ui->graphicsView->geometry().width() - 10, ui->graphicsView->geometry().height() - 10,Qt::KeepAspectRatio);
             QGraphicsScene *scene = new QGraphicsScene;
             scene->addPixmap(QPixmap::fromImage(ResizeImage));
             ui->graphicsView->setScene(scene);
