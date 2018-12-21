@@ -75,3 +75,5 @@ sweet_target_add(spike_cv CONFIGS OpenCV)
 # add_executable(a spike/cv.cpp)
 # sweet_target_add(a CONFIGS OpenCV)
 # sweet_target_add(a CONFIGS date)
+
+add_subdirectory(./module)
