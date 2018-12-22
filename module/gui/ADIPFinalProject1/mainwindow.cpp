@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include <QFileDialog>
 #include <QMessageBox>
+#include <array>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -13,7 +14,6 @@ MainWindow::MainWindow(QWidget *parent) :
     this->image = new QImage();
     //connect the button listener event
     connect(ui->pushButton,SIGNAL(clicked()), this, SLOT(on_slotOpenImage_triggered()));
-
 }
 
 void MainWindow::on_slotOpenImage_triggered()
