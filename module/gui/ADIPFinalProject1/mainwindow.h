@@ -27,6 +27,8 @@ private slots:
 private:
     Ui::MainWindow *ui;
     QImage *image;
+    api::segmenter::std_image_type qimage_to_std_image(QImage *in);
+    QImage std_image_to_qimage(api::segmenter::std_image_type in);
 };
 
 #endif // MAINWINDOW_H
