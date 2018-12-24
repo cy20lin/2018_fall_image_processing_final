@@ -36,6 +36,7 @@ HEADERS += \
 FORMS += \
         mainwindow.ui
 
+QMAKE_LFLAGS+=-static-libgcc
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
