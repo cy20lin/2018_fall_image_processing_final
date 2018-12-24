@@ -26,10 +26,10 @@ private slots:
 private:
     Ui::MainWindow *ui;
     QImage *image;
-    api::gui::std_image_type qimage_to_std_image(QImage *in);
-    QImage std_image_to_qimage(api::gui::std_image_type in);
+    api::segmenter::std_image_type qimage_to_std_image(QImage *in);
+    QImage std_image_to_qimage(api::segmenter::std_image_type in);
 
-    api::gui::std_keypoints_type get_points();
+    api::segmenter::std_keypoints_type get_points();
 };
 
 #endif // MAINWINDOW_H

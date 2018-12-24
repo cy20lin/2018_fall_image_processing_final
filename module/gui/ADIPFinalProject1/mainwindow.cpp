@@ -51,7 +51,7 @@ void MainWindow::on_slotOpenImage_triggered()
 
             ui->widget1->show();
 
-            api::gui::std_image_type StdImageType1 = qimage_to_std_image(&ResizeImage);
+            api::segmenter::std_image_type StdImageType1 = qimage_to_std_image(&ResizeImage);
             QImage ResizeImage2 = std_image_to_qimage(StdImageType1);
         }
     }
@@ -71,8 +71,8 @@ void MainWindow::on_pushButton_clicked()
 }
 
 
-api::gui::std_image_type MainWindow::qimage_to_std_image(QImage *in) {
-    api::gui::std_image_type out;
+api::segmenter::std_image_type MainWindow::qimage_to_std_image(QImage *in) {
+    api::segmenter::std_image_type out;
     auto & size = std::get<0>(out);
     auto & data = std::get<1>(out);
     int xn;
@@ -98,7 +98,7 @@ api::gui::std_image_type MainWindow::qimage_to_std_image(QImage *in) {
     return out;
 }
 
-QImage MainWindow::std_image_to_qimage(api::gui::std_image_type in)
+QImage MainWindow::std_image_to_qimage(api::segmenter::std_image_type in)
 {
     QImage out;
     auto & size = std::get<0>(in);

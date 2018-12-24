@@ -31,7 +31,6 @@ SOURCES += \
 
 HEADERS += \
         mainwindow.h \
-    core.hpp \
     widget.h
 
 FORMS += \
