@@ -123,10 +123,28 @@ QImage MainWindow::std_image_to_qimage(api::segmenter::std_image_type in)
 
 void MainWindow::on_pushButton_2_clicked()
 {
+    std::vector<std::pair<int,int>> newForegroundPoints;
+    std::vector<std::pair<int,int>> newBackgroundPoints;
+    for (const auto & pt : ui->widget1->foregroundPoints)
+    {
+        newForegroundPoints.push_back(std::pair<int,int>(pt.first / ui->widget1->width() * this->image->width(), pt.second / ui->widget1->height() * this->image->height()));
+    }
+    for (const auto & pt : ui->widget1->backgroundPoints)
+    {
+        newBackgroundPoints.push_back(std::pair<int,int>(pt.first / ui->widget1->width() * this->image->width(), pt.second / ui->widget1->height() * this->image->height()));
+    }
     api::segmenter::std_keypoints_type keyPoints1;
-    keyPoints1.push_back(ui->widget1->foregroundPoints);
-    keyPoints1.push_back(ui->widget1->backgroundPoints);
+    keyPoints1.push_back(newForegroundPoints);
+    keyPoints1.push_back(newBackgroundPoints);
     api::segmenter::segmenter_cimg obj1;
-    obj1.segment(qimage_to_std_image(this->image), keyPoints1);
+    QImage segmentedImage = std_image_to_qimage(obj1.segment(qimage_to_std_image(this->image), keyPoints1));
+
+    int boundaryX = 5;
+    int boundaryY = 5;
+    QGraphicsScene *scene = new QGraphicsScene;
+    scene->addPixmap(QPixmap::fromImage(segmentedImage.scaled(ui->graphicsView_3->geometry().width() - 2 * boundaryX, ui->graphicsView_3->geometry().height() - 2 * boundaryY, Qt::KeepAspectRatio)));
+    ui->graphicsView_3->setScene(scene);
+    ui->graphicsView_3->show();
+
 }
 
