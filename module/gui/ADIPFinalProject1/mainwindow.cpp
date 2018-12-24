@@ -127,11 +127,11 @@ void MainWindow::on_pushButton_2_clicked()
     std::vector<std::pair<int,int>> newBackgroundPoints;
     for (const auto & pt : ui->widget1->foregroundPoints)
     {
-        newForegroundPoints.push_back(std::pair<int,int>(pt.first / ui->widget1->width() * this->image->width(), pt.second / ui->widget1->height() * this->image->height()));
+        newForegroundPoints.push_back(std::pair<int,int>(pt.first * this->image->width() / ui->widget1->width(), pt.second * this->image->height() / ui->widget1->height() ));
     }
     for (const auto & pt : ui->widget1->backgroundPoints)
     {
-        newBackgroundPoints.push_back(std::pair<int,int>(pt.first / ui->widget1->width() * this->image->width(), pt.second / ui->widget1->height() * this->image->height()));
+        newBackgroundPoints.push_back(std::pair<int,int>(pt.first * this->image->width() / ui->widget1->width() , pt.second * this->image->height() / ui->widget1->height() ));
     }
     api::segmenter::std_keypoints_type keyPoints1;
     keyPoints1.push_back(newForegroundPoints);
