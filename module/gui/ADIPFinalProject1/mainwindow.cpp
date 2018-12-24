@@ -21,7 +21,7 @@ void MainWindow::on_slotOpenImage_triggered()
     QString fileName = QFileDialog::getOpenFileName(
                 this, "open image file",
                 ".",
-                "Image files (*.bmp *.jpg *.pbm *.pgm *.png *.ppm *.xbm *.xpm);;All files (*.*)");
+                "Image files (*.bmp *.jpg *.jpeg *.pbm *.pgm *.png *.ppm *.xbm *.xpm);;All files (*.*)");
     if(fileName != "")
     {
         if(image->load(fileName))
