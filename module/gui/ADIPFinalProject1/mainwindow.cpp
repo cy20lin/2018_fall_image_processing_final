@@ -123,27 +123,38 @@ QImage MainWindow::std_image_to_qimage(api::segmenter::std_image_type in)
 
 void MainWindow::on_pushButton_2_clicked()
 {
+    int boundaryX = 5;
+    int boundaryY = 5;
+    QImage MarkedImage = image->scaled(ui->graphicsView_2->geometry().width() - 2 * boundaryX, ui->graphicsView_2->geometry().height() - 2 * boundaryY, Qt::KeepAspectRatio);
+
+
     std::vector<std::pair<int,int>> newForegroundPoints;
     std::vector<std::pair<int,int>> newBackgroundPoints;
     for (const auto & pt : ui->widget1->foregroundPoints)
     {
+        MarkedImage.setPixel(pt.first, pt.second, qRgb(255,0,0));
         newForegroundPoints.push_back(std::pair<int,int>(pt.first * this->image->width() / ui->widget1->width(), pt.second * this->image->height() / ui->widget1->height() ));
     }
     for (const auto & pt : ui->widget1->backgroundPoints)
     {
+        MarkedImage.setPixel(pt.first, pt.second, qRgb(0,0,255));
         newBackgroundPoints.push_back(std::pair<int,int>(pt.first * this->image->width() / ui->widget1->width() , pt.second * this->image->height() / ui->widget1->height() ));
     }
+    QGraphicsScene *scene1 = new QGraphicsScene;
+    scene1->addPixmap(QPixmap::fromImage(MarkedImage));
+    ui->graphicsView_2->setScene(scene1);
+    ui->graphicsView_2->show();
+
     api::segmenter::std_keypoints_type keyPoints1;
     keyPoints1.push_back(newForegroundPoints);
     keyPoints1.push_back(newBackgroundPoints);
     api::segmenter::segmenter_cimg obj1;
     QImage segmentedImage = std_image_to_qimage(obj1.segment(qimage_to_std_image(this->image), keyPoints1));
 
-    int boundaryX = 5;
-    int boundaryY = 5;
-    QGraphicsScene *scene = new QGraphicsScene;
-    scene->addPixmap(QPixmap::fromImage(segmentedImage.scaled(ui->graphicsView_3->geometry().width() - 2 * boundaryX, ui->graphicsView_3->geometry().height() - 2 * boundaryY, Qt::KeepAspectRatio)));
-    ui->graphicsView_3->setScene(scene);
+
+    QGraphicsScene *scene2 = new QGraphicsScene;
+    scene2->addPixmap(QPixmap::fromImage(segmentedImage.scaled(ui->graphicsView_3->geometry().width() - 2 * boundaryX, ui->graphicsView_3->geometry().height() - 2 * boundaryY, Qt::KeepAspectRatio)));
+    ui->graphicsView_3->setScene(scene2);
     ui->graphicsView_3->show();
 
 }
