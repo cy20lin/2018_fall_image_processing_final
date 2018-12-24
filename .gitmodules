@@ -5,3 +5,7 @@
 [submodule "module/segmenter"]
     path = module/segmenter
 	  url = https://github.com/cy20lin/2018_fall_image_processing_final_api_segmenter
+
+[submodule "module/opk"]
+	path = module/opk
+	url = https://github.com/justin-changqi/openpose-keypoints
