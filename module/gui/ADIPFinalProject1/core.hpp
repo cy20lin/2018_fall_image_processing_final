@@ -5,6 +5,7 @@
 #include <tuple>
 #include <cstdint>
 #include <utility>
+#include "..\..\..\..\2018_fall_image_processing_final_api_segmenter\include\api\segmenter\segmenter_cimg.hpp"
 
 namespace api {
 namespace gui {
