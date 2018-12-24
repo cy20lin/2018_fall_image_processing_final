@@ -9,7 +9,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    resize(800,600);
+    //resize(800,600);
 
     this->image = new QImage();
     //connect the button listener event
@@ -126,18 +126,46 @@ void MainWindow::on_pushButton_2_clicked()
     int boundaryX = 5;
     int boundaryY = 5;
     QImage MarkedImage = image->scaled(ui->graphicsView_2->geometry().width() - 2 * boundaryX, ui->graphicsView_2->geometry().height() - 2 * boundaryY, Qt::KeepAspectRatio);
-
+    // MarkedImage size = fit graphicsView_2 size
 
     std::vector<std::pair<int,int>> newForegroundPoints;
     std::vector<std::pair<int,int>> newBackgroundPoints;
     for (const auto & pt : ui->widget1->foregroundPoints)
     {
-        MarkedImage.setPixel(pt.first, pt.second, qRgb(255,0,0));
+        for(int loopNumber1 = -2; loopNumber1 <= 2; loopNumber1++)
+        {
+            for(int loopNumber2 = -2; loopNumber2 <= 2; loopNumber2++)
+            {
+                if(pt.first + loopNumber1 < 0 || pt.first + loopNumber1 > MarkedImage.width() - 1 ||
+                   pt.second + loopNumber2 < 0 || pt.second + loopNumber2 > MarkedImage.height() - 1  )
+                {
+                    throw std::invalid_argument("keypoint out of range");
+                }
+                else
+                {
+                    MarkedImage.setPixel(pt.first + loopNumber1, pt.second + loopNumber2, qRgb(255,0,0));
+                }
+            }
+        }
         newForegroundPoints.push_back(std::pair<int,int>(pt.first * this->image->width() / ui->widget1->width(), pt.second * this->image->height() / ui->widget1->height() ));
     }
     for (const auto & pt : ui->widget1->backgroundPoints)
     {
-        MarkedImage.setPixel(pt.first, pt.second, qRgb(0,0,255));
+        for(int loopNumber1 = -2; loopNumber1 <= 2; loopNumber1++)
+        {
+            for(int loopNumber2 = -2; loopNumber2 <= 2; loopNumber2++)
+            {
+                if(pt.first + loopNumber1 < 0 || pt.first + loopNumber1 > MarkedImage.width() - 1 ||
+                   pt.second + loopNumber2 < 0 || pt.second + loopNumber2 > MarkedImage.height() - 1  )
+                {
+                    throw std::invalid_argument("keypoint out of range");
+                }
+                else
+                {
+                    MarkedImage.setPixel(pt.first + loopNumber1, pt.second + loopNumber2, qRgb(0,0,255));
+                }
+            }
+        }
         newBackgroundPoints.push_back(std::pair<int,int>(pt.first * this->image->width() / ui->widget1->width() , pt.second * this->image->height() / ui->widget1->height() ));
     }
     QGraphicsScene *scene1 = new QGraphicsScene;
@@ -149,13 +177,29 @@ void MainWindow::on_pushButton_2_clicked()
     keyPoints1.push_back(newForegroundPoints);
     keyPoints1.push_back(newBackgroundPoints);
     api::segmenter::segmenter_cimg obj1;
-    QImage segmentedImage = std_image_to_qimage(obj1.segment(qimage_to_std_image(this->image), keyPoints1));
+    QImage segmentedImage = std_image_to_qimage(obj1.segment(qimage_to_std_image(this->image), keyPoints1));    //  segmentedImage size = raw image
 
 
     QGraphicsScene *scene2 = new QGraphicsScene;
     scene2->addPixmap(QPixmap::fromImage(segmentedImage.scaled(ui->graphicsView_3->geometry().width() - 2 * boundaryX, ui->graphicsView_3->geometry().height() - 2 * boundaryY, Qt::KeepAspectRatio)));
     ui->graphicsView_3->setScene(scene2);
     ui->graphicsView_3->show();
+
+    QImage *resultImage = new QImage(image->size().width(), image->size().height(), QImage::Format_RGB888); //  resultImage size = raw image
+    for(int loopNumber1 = 0; loopNumber1 < resultImage->height(); loopNumber1++)
+    {
+        for(int loopNumber2 = 0; loopNumber2 < resultImage->width(); loopNumber2++)
+        {
+            if((unsigned char)segmentedImage.pixelColor(loopNumber2, loopNumber1).red() != 0)
+            {
+                resultImage->setPixel(loopNumber2, loopNumber1, qRgb((unsigned char)this->image->pixelColor(loopNumber2, loopNumber1).red(), (unsigned char)this->image->pixelColor(loopNumber2, loopNumber1).green(), (unsigned char)this->image->pixelColor(loopNumber2, loopNumber1).blue()));
+            }
+        }
+    }
+    QGraphicsScene *scene3 = new QGraphicsScene;
+    scene3->addPixmap(QPixmap::fromImage(resultImage->scaled(ui->graphicsView_4->geometry().width() - 2 * boundaryX, ui->graphicsView_4->geometry().height() - 2 * boundaryY, Qt::KeepAspectRatio)));
+    ui->graphicsView_4->setScene(scene3);
+    ui->graphicsView_4->show();
 
 }
 
