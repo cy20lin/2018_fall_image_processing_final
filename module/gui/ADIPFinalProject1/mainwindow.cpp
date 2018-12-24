@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QImage>
 #include <array>
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -93,9 +94,13 @@ api::segmenter::std_image_type MainWindow::qimage_to_std_image(QImage *in) {
             // Be careful!!
             enum { cv_blue = 0, cv_green, cv_red, cv_alpha};
             enum { red = 0, green, blue, alpha};
-            data[xn*y+x][red] = (unsigned char)in->pixelColor(x, y).red();
-            data[xn*y+x][green] = (unsigned char)in->pixelColor(x, y).green();
-            data[xn*y+x][blue] = (unsigned char)in->pixelColor(x, y).blue();
+            // data[xn*y+x][red] = (unsigned char)in->pixelColor(x, y).red();
+            // data[xn*y+x][green] = (unsigned char)in->pixelColor(x, y).green();
+            // data[xn*y+x][blue] = (unsigned char)in->pixelColor(x, y).blue();
+            // data[xn*y+x][alpha] = 255;
+            data[xn*y+x][red] = (unsigned char)QColor(in->pixel(x, y)).red();
+            data[xn*y+x][green] = (unsigned char)QColor(in->pixel(x, y)).green();
+            data[xn*y+x][blue] = (unsigned char)QColor(in->pixel(x, y)).blue();
             data[xn*y+x][alpha] = 255;
         }
     }
@@ -194,9 +199,15 @@ void MainWindow::on_pushButton_2_clicked()
     {
         for(int loopNumber2 = 0; loopNumber2 < resultImage->width(); loopNumber2++)
         {
-            if((unsigned char)segmentedImage.pixelColor(loopNumber2, loopNumber1).red() != 0)
+            // if((unsigned char)segmentedImage.pixelColor(loopNumber2, loopNumber1).red() != 0)
+            if((unsigned char)QColor(segmentedImage.pixel(loopNumber2, loopNumber1)).red() != 0)
             {
-                resultImage->setPixel(loopNumber2, loopNumber1, qRgb((unsigned char)this->image->pixelColor(loopNumber2, loopNumber1).red(), (unsigned char)this->image->pixelColor(loopNumber2, loopNumber1).green(), (unsigned char)this->image->pixelColor(loopNumber2, loopNumber1).blue()));
+                resultImage->setPixel(
+                    loopNumber2,
+                    loopNumber1,
+                    qRgb((unsigned char)QColor(this->image->pixel(loopNumber2, loopNumber1)).red(),
+                         (unsigned char)QColor(this->image->pixel(loopNumber2, loopNumber1)).green(),
+                         (unsigned char)QColor(this->image->pixel(loopNumber2, loopNumber1)).blue()));
             }
         }
     }

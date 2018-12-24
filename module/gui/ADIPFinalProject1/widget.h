@@ -5,7 +5,7 @@
 #include <QLabel>
 #include <QVBoxLayout>
 #include <QMouseEvent>
-#include "..\..\..\..\2018_fall_image_processing_final_api_segmenter\include\api\segmenter\segmenter_cimg.hpp"
+#include <api/segmenter/segmenter_cimg.hpp>
 
 class Widget : public QWidget
 {
