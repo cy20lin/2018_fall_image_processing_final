@@ -36,10 +36,12 @@ void Widget::mouseMoveEvent(QMouseEvent *event){
 
 void Widget::mousePressEvent(QMouseEvent *event){
     pressLabel->setText(QString(tr("點擊處：(%1, %2)")).arg(QString::number(event->x()), QString::number(event->y())));
+    foregroundPoints.push_back(std::pair<int,int>(event->x(), event->y()));
 }
 
 void Widget::mouseDoubleClickEvent(QMouseEvent *event){
     doubleClickLabel->setText(QString(tr("雙擊處：(%1, %2)")).arg(QString::number(event->x()), QString::number(event->y())));
+    backgroundPoints.push_back(std::pair<int,int>(event->x(), event->y()));
 }
 
 void Widget::mouseReleaseEvent(QMouseEvent *event){

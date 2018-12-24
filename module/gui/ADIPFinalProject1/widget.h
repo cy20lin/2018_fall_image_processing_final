@@ -17,7 +17,9 @@ public:
     void mousePressEvent(QMouseEvent *event);
     void mouseDoubleClickEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
-    api::segmenter::std_keypoints_type keyPoints1;
+
+    std::vector<std::pair<int,int>> foregroundPoints;
+    std::vector<std::pair<int,int>> backgroundPoints;
 private:
     QLabel *moveLabel;
     QLabel *pressLabel;
