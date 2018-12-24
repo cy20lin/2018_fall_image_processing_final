@@ -206,5 +206,6 @@ void MainWindow::on_pushButton_2_clicked()
 
 void MainWindow::on_pushButton_3_clicked()
 {
-
+    ui->widget1->foregroundPoints.clear();
+    ui->widget1->backgroundPoints.clear();
 }
