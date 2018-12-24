@@ -120,3 +120,13 @@ QImage MainWindow::std_image_to_qimage(api::segmenter::std_image_type in)
 
 
 
+
+void MainWindow::on_pushButton_2_clicked()
+{
+    api::segmenter::std_keypoints_type keyPoints1;
+    keyPoints1.push_back(ui->widget1->foregroundPoints);
+    keyPoints1.push_back(ui->widget1->backgroundPoints);
+    api::segmenter::segmenter_cimg obj1;
+    obj1.segment(qimage_to_std_image(this->image), keyPoints1);
+}
+
