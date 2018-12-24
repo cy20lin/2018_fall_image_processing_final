@@ -26,8 +26,11 @@ void MainWindow::on_slotOpenImage_triggered()
     {
         if(image->load(fileName))
         {
+            int boundaryX = 5;
+            int boundaryY = 5;
+
             //***Resize image for display***
-            QImage ResizeImage = image->scaled(ui->graphicsView->geometry().width() - 10, ui->graphicsView->geometry().height() - 10,Qt::KeepAspectRatio);
+            QImage ResizeImage = image->scaled(ui->graphicsView->geometry().width() - 2 * boundaryX, ui->graphicsView->geometry().height() - 2 * boundaryY, Qt::KeepAspectRatio);
 
             //***Show origin image***
             QGraphicsScene *scene = new QGraphicsScene;
@@ -38,7 +41,15 @@ void MainWindow::on_slotOpenImage_triggered()
             //***Show image for choose points***
             ui->graphicsView_2->setScene(scene);
             ui->graphicsView_2->show();
-            ui->widget1->resize(ui->graphicsView->geometry().width() - 10, ui->graphicsView->geometry().height() - 10);
+            int graphicsView2Width = ui->graphicsView_2->geometry().width();
+            int graphicsView2Height = ui->graphicsView_2->geometry().height();
+            int graphicsView2X = ui->graphicsView_2->geometry().x();
+            int graphicsView2Y = ui->graphicsView_2->geometry().y();
+            int graphicsView2WidthHalf = graphicsView2Width / 2;
+            int graphicsView2HeightHalf = graphicsView2Height / 2;
+            ui->widget1->setGeometry(graphicsView2X + ( graphicsView2WidthHalf - ResizeImage.width() / 2), graphicsView2Y + ( graphicsView2HeightHalf - ResizeImage.height() / 2), ResizeImage.width(), ResizeImage.height());
+
+            ui->widget1->show();
 
             api::segmenter::std_image_type StdImageType1 = qimage_to_std_image(&ResizeImage);
             QImage ResizeImage2 = std_image_to_qimage(StdImageType1);
