@@ -2,10 +2,6 @@
     path = submodule/sweet
     url = https://github.com/cy20lin/sweet
 
-[submodule "submodule/imgui"]
-    path = submodule/imgui
-    url = https://github.com/Flix01/imgui
-
 [submodule "module/segmenter"]
     path = module/segmenter
 	  url = https://github.com/cy20lin/2018_fall_image_processing_final_api_segmenter
