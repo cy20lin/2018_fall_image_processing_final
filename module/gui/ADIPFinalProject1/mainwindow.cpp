@@ -26,18 +26,22 @@ void MainWindow::on_slotOpenImage_triggered()
     {
         if(image->load(fileName))
         {
-
-            //QImage ResizeImage = image->scaled(ui->graphicsView->size(),Qt::KeepAspectRatio);
+            //***Resize image for display***
             QImage ResizeImage = image->scaled(ui->graphicsView->geometry().width() - 10, ui->graphicsView->geometry().height() - 10,Qt::KeepAspectRatio);
+
+            //***Show origin image***
+            QGraphicsScene *scene = new QGraphicsScene;
+            scene->addPixmap(QPixmap::fromImage(ResizeImage));
+            ui->graphicsView->setScene(scene);
+            ui->graphicsView->show();
+
+            //***Show image for choose points***
+            ui->graphicsView_2->setScene(scene);
+            ui->graphicsView_2->show();
+            ui->widget1->resize(ui->graphicsView->geometry().width() - 10, ui->graphicsView->geometry().height() - 10);
 
             api::segmenter::std_image_type StdImageType1 = qimage_to_std_image(&ResizeImage);
             QImage ResizeImage2 = std_image_to_qimage(StdImageType1);
-
-            QGraphicsScene *scene = new QGraphicsScene;
-            scene->addPixmap(QPixmap::fromImage(ResizeImage2));
-            ui->graphicsView->setScene(scene);
-            //ui->graphicsView->resize(image->width() + 10, image->height() + 10);
-            ui->graphicsView->show();
         }
     }
 }
