@@ -26,6 +26,10 @@ void MainWindow::on_slotOpenImage_triggered()
     {
         if(image->load(fileName))
         {
+            //***Clear keypoints***
+            ui->widget1->foregroundPoints.clear();
+            ui->widget1->backgroundPoints.clear();
+
             int boundaryX = 5;
             int boundaryY = 5;
 
