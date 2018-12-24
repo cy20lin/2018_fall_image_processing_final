@@ -1,0 +1,24 @@
+QMAKE_CXX.INCDIRS = \
+    E:/msys2/mingw32/include/c++/7.3.0 \
+    E:/msys2/mingw32/include/c++/7.3.0/i686-w64-mingw32 \
+    E:/msys2/mingw32/include/c++/7.3.0/backward \
+    E:/msys2/mingw32/lib/gcc/i686-w64-mingw32/7.3.0/include \
+    E:/msys2/mingw32/include \
+    E:/msys2/mingw32/lib/gcc/i686-w64-mingw32/7.3.0/include-fixed \
+    E:/msys2/mingw32/i686-w64-mingw32/include
+QMAKE_CXX.LIBDIRS = \
+    E \
+    /msys2/mingw32/lib/gcc/i686-w64-mingw32/7.3.0/;E \
+    /msys2/mingw32/lib/gcc/;E \
+    /msys2/mingw32/i686-w64-mingw32/lib/;E \
+    /msys2/mingw32/lib/;E \
+    /msys2/mingw32/lib
+QMAKE_CXX.QT_COMPILER_STDCXX = 201402L
+QMAKE_CXX.QMAKE_GCC_MAJOR_VERSION = 7
+QMAKE_CXX.QMAKE_GCC_MINOR_VERSION = 3
+QMAKE_CXX.QMAKE_GCC_PATCH_VERSION = 0
+QMAKE_CXX.COMPILER_MACROS = \
+    QT_COMPILER_STDCXX \
+    QMAKE_GCC_MAJOR_VERSION \
+    QMAKE_GCC_MINOR_VERSION \
+    QMAKE_GCC_PATCH_VERSION
