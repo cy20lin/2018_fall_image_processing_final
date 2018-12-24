@@ -1,5 +1,5 @@
-#ifndef FINAL_MODULE_SEGMENTER_INCLUDE_API_SEGMENTER_CORE_HPP_INCLUDED
-#define FINAL_MODULE_SEGMENTER_INCLUDE_API_SEGMENTER_CORE_HPP_INCLUDED
+#ifndef FINAL_MODULE_GUI_INCLUDE_API_SEGMENTER_CORE_HPP_INCLUDED
+#define FINAL_MODULE_GUI_INCLUDE_API_SEGMENTER_CORE_HPP_INCLUDED
 #include <array>
 #include <vector>
 #include <tuple>
@@ -7,7 +7,7 @@
 #include <utility>
 
 namespace api {
-namespace segmenter {
+namespace gui {
 
 // image definitions using standard libraries
 
@@ -22,4 +22,4 @@ using std_keypoints_type = std::vector<std::vector<std::pair<int,int>>>;
 } // namespace segmenter
 } // namespace api
 
-#endif // FINAL_MODULE_SEGMENTER_INCLUDE_API_SEGMENTER_CORE_HPP_INCLUDED
+#endif // FINAL_MODULE_GUI_INCLUDE_API_SEGMENTER_CORE_HPP_INCLUDED

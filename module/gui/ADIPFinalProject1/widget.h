@@ -5,6 +5,7 @@
 #include <QLabel>
 #include <QVBoxLayout>
 #include <QMouseEvent>
+#include "core.hpp"
 
 class Widget : public QWidget
 {
@@ -16,6 +17,7 @@ public:
     void mousePressEvent(QMouseEvent *event);
     void mouseDoubleClickEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
+    api::gui::std_keypoints_type keyPoints1;
 private:
     QLabel *moveLabel;
     QLabel *pressLabel;
