@@ -34,6 +34,7 @@ set(CMAKE_AUTOUIC ON)
 
 include_directories("${CMAKE_CURRENT_LIST_DIR}/include")
 include_directories("${CMAKE_CURRENT_LIST_DIR}/module/segmenter/include")
+include_directories("${CMAKE_CURRENT_LIST_DIR}/module/opk/include")
 include_directories("${CMAKE_CURRENT_LIST_DIR}/module/gui/include")
 
 

@@ -31,20 +31,20 @@ Widget::Widget(QWidget *parent) :
 
 void Widget::mouseMoveEvent(QMouseEvent *event){
     //arg()函數可以替換掉QString中出現的佔位符。占位符為%加位置，如%1、%2。
-    moveLabel->setText(QString(tr("移動到：(%1, %2)")).arg(QString::number(event->x()), QString::number(event->y())));
+    //moveLabel->setText(QString(tr("移動到：(%1, %2)")).arg(QString::number(event->x()), QString::number(event->y())));
 }
 
 void Widget::mousePressEvent(QMouseEvent *event){
-    pressLabel->setText(QString(tr("點擊處：(%1, %2)")).arg(QString::number(event->x()), QString::number(event->y())));
+    //pressLabel->setText(QString(tr("點擊處：(%1, %2)")).arg(QString::number(event->x()), QString::number(event->y())));
     foregroundPoints.push_back(std::pair<int,int>(event->x(), event->y()));
 }
 
 void Widget::mouseDoubleClickEvent(QMouseEvent *event){
-    doubleClickLabel->setText(QString(tr("雙擊處：(%1, %2)")).arg(QString::number(event->x()), QString::number(event->y())));
+    //doubleClickLabel->setText(QString(tr("雙擊處：(%1, %2)")).arg(QString::number(event->x()), QString::number(event->y())));
     backgroundPoints.push_back(std::pair<int,int>(event->x(), event->y()));
 }
 
 void Widget::mouseReleaseEvent(QMouseEvent *event){
-    releaseLabel->setText(QString(tr("釋放處：(%1, %2)")).arg(QString::number(event->x()), QString::number(event->y())));
+    //releaseLabel->setText(QString(tr("釋放處：(%1, %2)")).arg(QString::number(event->x()), QString::number(event->y())));
 }
 

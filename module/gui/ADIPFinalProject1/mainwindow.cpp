@@ -4,6 +4,8 @@
 #include <QMessageBox>
 #include <QImage>
 #include <array>
+#include <api/segmenter/cv_bridge.hpp>
+#include <iostream>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -148,7 +150,7 @@ void MainWindow::on_pushButton_2_clicked()
                 if(pt.first + loopNumber1 < 0 || pt.first + loopNumber1 > MarkedImage.width() - 1 ||
                    pt.second + loopNumber2 < 0 || pt.second + loopNumber2 > MarkedImage.height() - 1  )
                 {
-                    throw std::invalid_argument("keypoint out of range");
+                    //throw std::invalid_argument("keypoint out of range");
                 }
                 else
                 {
@@ -167,7 +169,7 @@ void MainWindow::on_pushButton_2_clicked()
                 if(pt.first + loopNumber1 < 0 || pt.first + loopNumber1 > MarkedImage.width() - 1 ||
                    pt.second + loopNumber2 < 0 || pt.second + loopNumber2 > MarkedImage.height() - 1  )
                 {
-                    throw std::invalid_argument("keypoint out of range");
+                    //throw std::invalid_argument("keypoint out of range");
                 }
                 else
                 {
@@ -209,6 +211,13 @@ void MainWindow::on_pushButton_2_clicked()
                          (unsigned char)QColor(this->image->pixel(loopNumber2, loopNumber1)).green(),
                          (unsigned char)QColor(this->image->pixel(loopNumber2, loopNumber1)).blue()));
             }
+            else
+            {
+                resultImage->setPixel(
+                    loopNumber2,
+                    loopNumber1,
+                    qRgb(0, 0, 0));
+            }
         }
     }
     QGraphicsScene *scene3 = new QGraphicsScene;
@@ -223,4 +232,27 @@ void MainWindow::on_pushButton_3_clicked()
 {
     ui->widget1->foregroundPoints.clear();
     ui->widget1->backgroundPoints.clear();
+}
+
+void MainWindow::on_pushButton_4_clicked()
+{
+    //api::opk::kpExtractor kp;
+    auto image = api::segmenter::std_image_to_cv_mat(qimage_to_std_image(this->image));
+    int xn = image.cols;
+    int yn = image.rows;
+    kp.computeKp(image);
+    // std::cout << xn << " " << yn << std::endl;
+    auto fgpts = kp.getKeypoints(0.1)[0];
+    for (auto & pt : fgpts) {
+        int x = pt.first;
+        int y = pt.second;
+        if (x < 0 || x >= xn || y < 0 || y >= yn) {
+            continue;
+        }
+        //std::cout << pt.first << " " << pt.second << std::endl;
+        ui->widget1->foregroundPoints.push_back(std::pair<int,int>(pt.first * ui->widget1->width() / this->image->width(), pt.second * ui->widget1->height() / this->image->height()));
+    }
+    QMessageBox msgBox;
+    msgBox.setText("Openpose keypoints generated");
+    msgBox.exec();
 }
