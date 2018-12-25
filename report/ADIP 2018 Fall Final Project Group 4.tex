@@ -11,6 +11,9 @@
 
 \overrideIEEEmargins                                      % Needed to meet printer requirements.
 
+\usepackage{graphicx}     % for figure
+\usepackage{subcaption}   % for figure
+
 %In case you encounter the following error:
 %Error 1010 The PDF file may be corrupt (unable to open PDF file) OR
 %Error 1000 An error occurred while parsing a contents stream. Unable to analyze the PDF file.
@@ -31,18 +34,21 @@
 %\usepackage{amssymb}  % assumes amsmath package installed
 
 \title{\LARGE \bf
-Preparation of Papers for IEEE Sponsored Conferences \& Symposia*
+ADIP 2018 Fall Project Foreground Extraction- Group 4
 }
 
 
-\author{Albert Author$^{1}$ and Bernard D. Researcher$^{2}$% <-this % stops a space
-\thanks{*This work was not supported by any organization}% <-this % stops a space
-\thanks{$^{1}$Albert Author is with Faculty of Electrical Engineering, Mathematics and Computer Science,
-        University of Twente, 7500 AE Enschede, The Netherlands
-        {\tt\small albert.author@papercept.net}}%
-\thanks{$^{2}$Bernard D. Researcheris with the Department of Electrical Engineering, Wright State University,
-        Dayton, OH 45435, USA
-        {\tt\small b.d.researcher@ieee.org}}%
+\author{Chang-Qi Zhang$^{a}$, Jimmiy Hu$^{b}$ and Chien-Yu Lin$^{c}$ \\
+Author’s Student ID: 106368002 laboratory: lab107-1 advisor: Lih-Jen Kau$^{a}$\\
+Author’s Student ID: 107368001 laboratory: lab107-1 advisor: Lih-Jen Kau$^{b}$\\
+Author’s Student ID: 107368003 laboratory: lab107-1 advisor: Lih-Jen Kau$^{c}$% <-this % stops a space
+% \thanks{*This work was not supported by any organization}% <-this % stops a space
+% \thanks{$^{1}$Albert Author is with Faculty of Electrical Engineering, Mathematics and Computer Science,
+%         University of Twente, 7500 AE Enschede, The Netherlands
+%         {\tt\small albert.author@papercept.net}}%
+% \thanks{$^{2}$Bernard D. Researcheris with the Department of Electrical Engineering, Wright State University,
+%         Dayton, OH 45435, USA
+%         {\tt\small b.d.researcher@ieee.org}}%
 }
 
 
@@ -57,8 +63,10 @@ Preparation of Papers for IEEE Sponsored Conferences \& Symposia*
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{abstract}
-
-This electronic document is a �live� template. The various components of your paper [title, text, heads, etc.] are already defined on the style sheet, as illustrated by the portions given in this document.
+The foreground extraction methods from previous group. They either use a heavy computation method, Deeplab
+or manually assign region to achieve human based foreground extraction. In this final project we implement
+a semi-automatic foreground extraction software to.
+% This electronic document is a �live� template. The various components of your paper [title, text, heads, etc.] are already defined on the style sheet, as illustrated by the portions given in this document.
 
 \end{abstract}
 
@@ -66,9 +74,22 @@ This electronic document is a �live� template. The various components of you
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{INTRODUCTION}
 
-This template provides authors with most of the formatting specifications needed for preparing electronic versions of their papers. All standard paper components have been specified for three reasons: (1) ease of use when formatting individual papers, (2) automatic compliance to electronic requirements that facilitate the concurrent or later production of electronic products, and (3) conformity of style throughout a conference proceedings. Margins, column widths, line spacing, and type styles are built-in; examples of the type styles are provided throughout this document and are identified in italic type, within parentheses, following the example. Some components, such as multi-leveled equations, graphics, and tables are not prescribed, although the various table text styles are provided. The formatter will need to create these components, incorporating the applicable criteria that follow.
+% This template provides authors with most of the formatting specifications needed for preparing electronic versions of their papers. All standard paper components have been specified for three reasons: (1) ease of use when formatting individual papers, (2) automatic compliance to electronic requirements that facilitate the concurrent or later production of electronic products, and (3) conformity of style throughout a conference proceedings. Margins, column widths, line spacing, and type styles are built-in; examples of the type styles are provided throughout this document and are identified in italic type, within parentheses, following the example. Some components, such as multi-leveled equations, graphics, and tables are not prescribed, although the various table text styles are provided. The formatter will need to create these components, incorporating the applicable criteria that follow.
 
-\section{PROCEDURE FOR PAPER SUBMISSION}
+\section{PROCEDURE METHOD}
+Fig~\ref{fig:sys} shows the system structure for our semi-foreground segmentation method. 
+Our system can automatically define the foreground keypoints when user load a image. To achive the function,
+we based on OpenPose\cite{openpose}
+For background keypoints, 
+user need to use our user interface to select the backgroud keypoints. Once system get both OpenPose foreground
+keypoints and user difine backgroud then we apply Foreground/Backgroud segmentation to extract foreground
+form the input image.
+\begin{figure}[h!]
+   \centering
+   \includegraphics[width=\linewidth]{{"./doc_src/system"}.png}
+   \caption{System structure}
+   \label{fig:sys} 
+\end{figure}
 
 \subsection{Selecting a Template (Heading 2)}
 
@@ -207,7 +228,7 @@ References are important to the reader; therefore, each citation must be complet
 
 
 \begin{thebibliography}{99}
-
+\bibitem{openpose} Zhe Cao and Gines Hidalgo and Tomas Simon and Shih-En Wei and Yaser Sheikh, Open{P}ose: realtime multi-person 2{D} pose estimation using {P}art {A}ffinity {F}ields
 \bibitem{c1} G. O. Young, �Synthetic structure of industrial plastics (Book style with paper title and editor),� 	in Plastics, 2nd ed. vol. 3, J. Peters, Ed.  New York: McGraw-Hill, 1964, pp. 15�64.
 \bibitem{c2} W.-K. Chen, Linear Networks and Systems (Book style).	Belmont, CA: Wadsworth, 1993, pp. 123�135.
 \bibitem{c3} H. Poor, An Introduction to Signal Detection and Estimation.   New York: Springer-Verlag, 1985, ch. 4.
