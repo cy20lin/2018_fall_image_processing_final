@@ -39,17 +39,10 @@ ADIP 2018 Fall Project Foreground Extraction- Group 4
 }
 
 
-\author{Chang-Qi Zhang$^{a}$, Chen-Hung Hu$^{b}$ and Chien-Yu Lin$^{c}$ \\
+\author{Chang-Qi Zhang$^{a}$, Chien-Yu Lin$^{b}$ and Chen-Hung Hu$^{c}$ and  \\
 Author’s Student ID: 106368002 laboratory: lab107-1 advisor: Lih-Jen Kau$^{a}$\\
-Author’s Student ID: 107368001 laboratory: lab107-1 advisor: Lih-Jen Kau$^{b}$\\
-Author’s Student ID: 107368003 laboratory: lab107-1 advisor: Lih-Jen Kau$^{c}$% <-this % stops a space
-% \thanks{*This work was not supported by any organization}% <-this % stops a space
-% \thanks{$^{a}$Albert Author is with Faculty of Electrical Engineering, Mathematics and Computer Science,
-%         University of Twente, 7500 AE Enschede, The Netherlands
-%         {\tt\small albert.author@papercept.net}}%
-% \thanks{$^{2}$Bernard D. Researcheris with the Department of Electrical Engineering, Wright State University,
-%         Dayton, OH 45435, USA
-%         {\tt\small b.d.researcher@ieee.org}}%
+Author’s Student ID: 107368003 laboratory: lab107-1 advisor: Lih-Jen Kau$^{b}$ \\
+Author’s Student ID: 107368001 laboratory: lab107-1 advisor: Lih-Jen Kau$^{c}$
 }
 
 
@@ -75,39 +68,138 @@ keypoints and provide UI for user select background keypoints.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{INTRODUCTION}
-Traditional image segmentation algorisms, for example, watershed and grabcut. 
-The difference between this two method is watershed initial by assign both 
+Traditional image segmentation algorithms, for example, watershed and grabcut. 
+There are differences between these two methods. Watershed initial by assigning both 
 foreground and background keypoints, then based on those points to do gradient 
-search, and grabcut initial by giving foreground rectangle region then use Gaussian 
-mixture model, GMM to find foreground region. Dou to the watershed algorism require 
+search. On the other hand, grabcut initial by giving foreground rectangle region then use Gaussian 
+mixture model, GMM to find foreground region. Due to the watershed algorithm require 
 to assign foreground keypoints on the object which you want to extract, we have to 
 integrate object detection method to get the region of the foreground object. 
 Common object detection, YOLO only give a bounding box of objects. Those bounding 
-boxes are usually not fit perfectly with the foreground that we expect. Therefore, 
-we propose using Openpose to get accurate foreground keypoints on people.  In this 
+boxes usually don't fit perfectly with the foreground as we expect. Therefore, 
+we propose using Openpose\cite{openpose} to get accurate foreground keypoints on people.  In this 
 way, the runtime for our program will be much shorter than using machine learning 
 segmentation technology, DeepLab, Mask RCNN, and SegNet.  
 
 \section{PROCEDURE METHOD}
 Fig~\ref{fig:sys} shows the system structure for our semi-foreground segmentation method. 
-Our system can automatically define the foreground keypoints when user click on openpose button.
-To achieve the function, we based on OpenPose\cite{openpose} For background keypoints, 
-user need to use our user interface to select the background keypoints. Once system get both OpenPose 
-foreground keypoints and user define background then we apply Foreground/Background segmentation to 
-extract foreground form the input image.
+Our system can automatically generate the foreground keypoints when user click on openpose button.
+The algorithm under the hood is based on OpenPose\cite{openpose}. For background keypoints, 
+user has to use our user interface to select the background keypoints. Once system get both OpenPose 
+foreground keypoints and user defined background keypoints, we then apply Foreground/Background 
+segmentation algorithm to extract foreground form the input image.
 \begin{figure}[h!]
    \centering
-   \includegraphics[width=\linewidth]{{"./doc_src/sys"}.png}
+   \includegraphics[width=0.9\linewidth]{{"./doc_src/sys"}.png}
    \caption{System structure}
    \label{fig:sys} 
 \end{figure}
 
 \subsection{Foreground/Background Segmenter}
 
-% First, confirm that you have the correct template for your paper size. This template has been tailored for output on the US-letter paper size. 
-% It may be used for A4 paper size if the paper size setting is suitably modified.
+\begin{itemize}
+   \item Step 1: Use Guassian filtering, with $\sigma = max(image.width, image.height) \times 0.002$;
+    \vspace{1em}
+   \item Step 2: Get the gradient vector (x y directions) for each channel (r, g, b),
+         Get the length (norm) of each gradient vector for each channel.
+         Sum length for gradient vector in each channel.
+         Add 1 to the sum and divide 1 using this sum.
+         Now we got a priority at this point whose value is in the range (0,1].
+         For smooth areas the priority value is high, otherwise the priority is low.
+         Gradient in x direction.
+   \vspace{1em}
+   \item Step 3: Given the labeled keypoints (i.e. foreground or background) and priority image.
+         \vspace{0.5em}\newline
+         \textbf{Initialization:}
+         For each neighbor (we use 8-neighbor in this project) of the keypoints.
+         Push each neighbor point into priority queque given their priority.
+         \vspace{0.5em}\newline
+         \textbf{Propagation:}
+         Pop the point with the highest priority.
+         Point with higher priority would be processed first.
+         Push all non-labeled neighbors around this point into priority queue.
+         Set the label of this point to the label of the labeled neighbor.
+         Stop when priority queue is empty.
+         Figure~\ref{fig:mask} is the result mask, with background in color red, foreground in color green.
+\end{itemize}
+\begin{figure*}[h!]
+   \centering
+   \begin{subfigure}[t]{0.19\linewidth}
+      \includegraphics[width=\linewidth]{{"./doc_src/blurred"}.png}
+      \caption{Gaussian blurred}
+      \label{fig:blurred}
+   \end{subfigure}
+   \begin{subfigure}[t]{0.19\linewidth}
+      \includegraphics[width=\linewidth]{{"./doc_src/gx"}.png}
+      \caption{x direction gradient}
+      \label{fig:xg}
+   \end{subfigure}
+   \begin{subfigure}[t]{0.19\linewidth}
+      \includegraphics[width=\linewidth]{{"./doc_src/gy"}.png}
+      \caption{y direction gradient}
+      \label{fig:yg}
+   \end{subfigure}
+   \begin{subfigure}[t]{0.19\linewidth}
+      \includegraphics[width=\linewidth]{{"./doc_src/p"}.png}
+      \caption{Priority Image, with black = 0, white = 1}
+      \label{fig:priority}
+   \end{subfigure}
+   \begin{subfigure}[t]{0.19\linewidth}
+      \includegraphics[width=\linewidth]{{"./doc_src/kmask"}.png}
+      \caption{result mask, with background in color red, foreground in color green.}
+      \label{fig:mask}
+   \end{subfigure}
+   \caption{Foreground/Background Segmente result figures}
+   \label{fig:fb-seg}
+\end{figure*}
+
+\begin{figure*}[b!]
+   \centering
+   \begin{subfigure}[t]{0.25\linewidth}
+      \includegraphics[width=\linewidth]{{"./doc_src/op24"}.png}
+      \caption{Test set image 24.}
+      \label{fig:ts-24}
+   \end{subfigure}
+   \hspace{1em}
+   \begin{subfigure}[t]{0.25\linewidth}
+      \includegraphics[width=\linewidth]{{"./doc_src/op14"}.png}
+      \caption{Test set image 14.}
+      \label{fig:ts-14}
+   \end{subfigure}
+   \hspace{1em}
+   \begin{subfigure}[t]{0.25\linewidth}
+      \includegraphics[width=\linewidth]{{"./doc_src/op21"}.png}
+      \caption{Test set image 21.}
+      \label{fig:ts-21}
+   \end{subfigure}
+   \vspace{1em}
+   \newline
+   \begin{subfigure}[t]{0.35\linewidth}
+      \includegraphics[width=\linewidth]{{"./doc_src/op27"}.png}
+      \caption{Test set image 27.}
+      \label{fig:ts-27}
+   \end{subfigure}
+   \hspace{1em}
+   \begin{subfigure}[t]{0.3\linewidth}
+      \includegraphics[width=\linewidth]{{"./doc_src/op29"}.png}
+      \caption{Test set image 29.}
+      \label{fig:ts-29}
+   \end{subfigure}
+   \caption{Openpose foreground keypoints results}
+   \label{fig:openpose-kp}
+\end{figure*}
 
 \subsection{Openpose Foreground Keypoints Generator}
+Figure~\ref{fig:openopes-net} shows the convolutional architecture of Openpose. In this 
+structure, it use multiple stages for the training progress. Each stage is locally 
+supervised after compute loss with original using an intermediate loss layer that 
+prevents vanishing gradients during training.\cite{openpoose-net}
+the model for our program use six stages for training progress. 
+\newpage
+The results of foreground keypoints extraction show in Figure~\ref{fig:openpose-kp}.
+As you can see, the keypoints which generated by OpenPose are pointing precisely. Also, 
+it is able to deal with multi people scenario (Figure~\ref{fig:ts-27} and 
+Figure~\ref{fig:ts-29}).
 
 \begin{figure*}[!t]
    \centering
@@ -116,171 +208,104 @@ extract foreground form the input image.
    \label{fig:openopes-net} 
 \end{figure*}
 
+\newpage
+
 \section{SOFTWARE ARCHITECTURE}
-Figure~\ref{fig:software} shows the software structure for our program. All program use  QT as main 
+Figure~\ref{fig:software} shows the software structure for our program. Our program use QT as main 
 thread, it is able to do file control. In manual mode, it can read the mouse event 
-for user define foreground and background keypoints. With intelligence mode, our 
+for user defined foreground and background keypoints. With intelligence mode, our 
 program will active Openpose to get human body foreground keypoints.
 \begin{figure}[h!]
    \centering
    \includegraphics[width=\linewidth]{{"./doc_src/software"}.png}
    \caption{Software structure}
-   \label{fig:software} 
+   \label{fig:software}
 \end{figure} 
 
 \section{RESULTS AND COMPARE}
-For evaluation the testing results, we used Dell Precision 5520 laptop with 8 cores 
+For evaluating the testing results, we used Dell Precision 5520 laptop with 8 cores 
 Intel Xeon CPU E3-1505M v6 @ 3.00GHz, Quadro M1200 GPU and 32GB RAM. Running on Ubuntu 16.04 operating 
-system.
+system. 
+\newpage
+For evaluation the results, we are using following equations~\ref{eq:precision}, 
+\ref{eq:recall} and \ref{eq:rmeasure}.
+\begin{equation}
+   Precision = \frac{True~positives}{True~positives+False~positives}
+   \label{eq:precision} 
+\end{equation}
+\begin{equation}
+   Recall = \frac{True~positives}{True~positives+False~negatives}
+   \label{eq:recall} 
+\end{equation}
+\begin{equation}
+   F measure = \frac{2\times Precision}{Precision+Recall}
+   \label{eq:rmeasure} 
+\end{equation}
 
 \begin{table}[!htb]
    \begin{center}
-      \begin{tabular}{|l|l|l|l|c|}%
-         \hline\bfseries IMG & \bfseries Precision & \bfseries Recall & \bfseries MAE & \bfseries Runtime(ms)% specify table head
+      \begin{tabular}{|l|l|l|l|l|c|}%
+         \hline\bfseries IMG & \bfseries Precision & \bfseries Recall & \bfseries F measure & \bfseries MAE & \bfseries Runtime(ms)% specify table head
          \csvreader[head to column names]{./doc_src/bk.csv}{}% use head of csv as column names
-         {\\\hline\image & \precision & \recall & \MAE & \runtime}% specify your coloumns here
+         {\\\hline\image & \precision & \recall &\fmeasure& \MAE & \runtime}% specify your coloumns here
          \\\hline
       \end{tabular}
    \end{center}
-   \caption{Testing result with test dataset.}
+   \caption{Testing results with test dataset.}
    \label{tab:result}
 \end{table}
+\newpage
+Our results from Table~\ref{tab:result}, precision and recall are not very good compare 
+with pure machine learning segmentation technology, DeepLab or Mask RCNN, but our runtime 
+is much faster than either DeepLab or Mask RCNN. Typical runtime for DeepLab and Mask RCNN are
+approximate 20+ seconds with Nvidia Titan X GPU machine. On the other hand, our method can be running
+in real time, if we execute program on the powerful desktop instead running normal laptop.
+\vspace{1em}
+\newline
+Following Figure~\ref{fig:result3}, \ref{fig:result4}, \ref{fig:result20} are our execution
+results with test dataset. 
+\begin{figure}[h!]
+   \centering
+   \includegraphics[width=\linewidth]{{"./doc_src/result/3"}.png}
+   \caption{GUI result with test image 3}
+   \label{fig:result3} 
+\end{figure}
 
+\begin{figure}[h!]
+   \centering
+   \includegraphics[width=\linewidth]{{"./doc_src/result/4"}.png}
+   \caption{GUI result with test image 4}
+   \label{fig:result4} 
+\end{figure}
 
-% Before you begin to format your paper, first write and save the content as a separate text file. Keep your text and graphic files separate until after the text has been formatted and styled. Do not use hard tabs, and limit use of hard returns to only one return at the end of a paragraph. Do not add any kind of pagination anywhere in the paper. Do not number text heads-the template will do that for you.
+\begin{figure}[h!]
+   \centering
+   \includegraphics[width=\linewidth]{{"./doc_src/result/20"}.png}
+   \caption{GUI result with test image 20}
+   \label{fig:result20} 
+\end{figure}
 
-% Finally, complete content and organizational editing before formatting. Please take note of the following items when proofreading spelling and grammar:
+\newpage
 
-% \subsection{Abbreviations and Acronyms} Define abbreviations and acronyms the first time they are used in the text, even after they have been defined in the abstract. Abbreviations such as IEEE, SI, MKS, CGS, sc, dc, and rms do not have to be defined. Do not use abbreviations in the title or heads unless they are unavoidable.
-
-% \subsection{Units}
-
-% \begin{itemize}
-
-% \item Use either SI (MKS) or CGS as primary units. (SI units are encouraged.) English units may be used as secondary units (in parentheses). An exception would be the use of English units as identifiers in trade, such as �3.5-inch disk drive�.
-% \item Avoid combining SI and CGS units, such as current in amperes and magnetic field in oersteds. This often leads to confusion because equations do not balance dimensionally. If you must use mixed units, clearly state the units for each quantity that you use in an equation.
-% \item Do not mix complete spellings and abbreviations of units: �Wb/m2� or �webers per square meter�, not �webers/m2�.  Spell out units when they appear in text: �. . . a few henries�, not �. . . a few H�.
-% \item Use a zero before decimal points: �0.25�, not �.25�. Use �cm3�, not �cc�. (bullet list)
-
-% \end{itemize}
-
-
-% \subsection{Equations}
-
-% The equations are an exception to the prescribed specifications of this template. You will need to determine whether or not your equation should be typed using either the Times New Roman or the Symbol font (please no other font). To create multileveled equations, it may be necessary to treat the equation as a graphic and insert it into the text after your paper is styled. Number equations consecutively. Equation numbers, within parentheses, are to position flush right, as in (1), using a right tab stop. To make your equations more compact, you may use the solidus ( / ), the exp function, or appropriate exponents. Italicize Roman symbols for quantities and variables, but not Greek symbols. Use a long dash rather than a hyphen for a minus sign. Punctuate equations with commas or periods when they are part of a sentence, as in
-
-% $$
-% \alpha + \beta = \chi \eqno{(1)}
-% $$
-
-% Note that the equation is centered using a center tab stop. Be sure that the symbols in your equation have been defined before or immediately following the equation. Use �(1)�, not �Eq. (1)� or �equation (1)�, except at the beginning of a sentence: �Equation (1) is . . .�
-
-% \subsection{Some Common Mistakes}
-% \begin{itemize}
-
-
-% \item The word �data� is plural, not singular.
-% \item The subscript for the permeability of vacuum ?0, and other common scientific constants, is zero with subscript formatting, not a lowercase letter �o�.
-% \item In American English, commas, semi-/colons, periods, question and exclamation marks are located within quotation marks only when a complete thought or name is cited, such as a title or full quotation. When quotation marks are used, instead of a bold or italic typeface, to highlight a word or phrase, punctuation should appear outside of the quotation marks. A parenthetical phrase or statement at the end of a sentence is punctuated outside of the closing parenthesis (like this). (A parenthetical sentence is punctuated within the parentheses.)
-% \item A graph within a graph is an �inset�, not an �insert�. The word alternatively is preferred to the word �alternately� (unless you really mean something that alternates).
-% \item Do not use the word �essentially� to mean �approximately� or �effectively�.
-% \item In your paper title, if the words �that uses� can accurately replace the word �using�, capitalize the �u�; if not, keep using lower-cased.
-% \item Be aware of the different meanings of the homophones �affect� and �effect�, �complement� and �compliment�, �discreet� and �discrete�, �principal� and �principle�.
-% \item Do not confuse �imply� and �infer�.
-% \item The prefix �non� is not a word; it should be joined to the word it modifies, usually without a hyphen.
-% \item There is no period after the �et� in the Latin abbreviation �et al.�.
-% \item The abbreviation �i.e.� means �that is�, and the abbreviation �e.g.� means �for example�.
-
-% \end{itemize}
-
-
-% \section{USING THE TEMPLATE}
-
-% Use this sample document as your LaTeX source file to create your document. Save this file as {\bf root.tex}. You have to make sure to use the cls file that came with this distribution. If you use a different style file, you cannot expect to get required margins. Note also that when you are creating your out PDF file, the source file is only part of the equation. {\it Your \TeX\ $\rightarrow$ PDF filter determines the output file size. Even if you make all the specifications to output a letter file in the source - if your filter is set to produce A4, you will only get A4 output. }
-
-% It is impossible to account for all possible situation, one would encounter using \TeX. If you are using multiple \TeX\ files you must make sure that the ``MAIN`` source file is called root.tex - this is particularly important if your conference is using PaperPlaza's built in \TeX\ to PDF conversion tool.
-
-% \subsection{Headings, etc}
-
-% Text heads organize the topics on a relational, hierarchical basis. For example, the paper title is the primary text head because all subsequent material relates and elaborates on this one topic. If there are two or more sub-topics, the next level head (uppercase Roman numerals) should be used and, conversely, if there are not at least two sub-topics, then no subheads should be introduced. Styles named �Heading 1�, �Heading 2�, �Heading 3�, and �Heading 4� are prescribed.
-
-% \subsection{Figures and Tables}
-
-% Positioning Figures and Tables: Place figures and tables at the top and bottom of columns. Avoid placing them in the middle of columns. Large figures and tables may span across both columns. Figure captions should be below the figures; table heads should appear above the tables. Insert figures and tables after they are cited in the text. Use the abbreviation �Fig. 1�, even at the beginning of a sentence.
-
-% \begin{table}[h]
-% \caption{An Example of a Table}
-% \label{table_example}
-% \begin{center}
-% \begin{tabular}{|c||c|}
-% \hline
-% One & Two\\
-% \hline
-% Three & Four\\
-% \hline
-% \end{tabular}
-% \end{center}
-% \end{table}
-
-
-%    \begin{figure}[thpb]
-%       \centering
-%       \framebox{\parbox{3in}{We suggest that you use a text box to insert a graphic (which is ideally a 300 dpi TIFF or EPS file, with all fonts embedded) because, in an document, this method is somewhat more stable than directly inserting a picture.
-% }}
-%       %\includegraphics[scale=1.0]{figurefile}
-%       \caption{Inductance of oscillation winding on amorphous
-%        magnetic core versus DC bias magnetic field}
-%       \label{figurelabel}
-%    \end{figure}
-   
-
-% Figure Labels: Use 8 point Times New Roman for Figure labels. Use words rather than symbols or abbreviations when writing Figure axis labels to avoid confusing the reader. As an example, write the quantity �Magnetization�, or �Magnetization, M�, not just �M�. If including units in the label, present them within parentheses. Do not label axes only with units. In the example, write �Magnetization (A/m)� or �Magnetization {A[m(1)]}�, not just �A/m�. Do not label axes with a ratio of quantities and units. For example, write �Temperature (K)�, not �Temperature/K.�
-
-% \section{CONCLUSIONS}
-
-% A conclusion section is not required. Although a conclusion may review the main points of the paper, do not replicate the abstract as the conclusion. A conclusion might elaborate on the importance of the work or suggest applications and extensions. 
-
-% \addtolength{\textheight}{-12cm}   % This command serves to balance the column lengths
-%                                   % on the last page of the document manually. It shortens
-%                                   % the textheight of the last page by a suitable amount.
-%                                   % This command does not take effect until the next page
-%                                   % so it should come on the page before the last. Make
-%                                   % sure that you do not shorten the textheight too much.
-
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% \section*{APPENDIX}
-
-% Appendixes should appear before the acknowledgment.
-
-% \section*{ACKNOWLEDGMENT}
-
-% The preferred spelling of the word �acknowledgment� in America is without an �e� after the �g�. Avoid the stilted expression, �One of us (R. B. G.) thanks . . .�  Instead, try �R. B. G. thanks�. Put sponsor acknowledgments in the unnumbered footnote on the first page.
-
-
-
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% References are important to the reader; therefore, each citation must be complete and correct. If at all possible, references should be commonly available publications.
-
-
+\section{PROJECT CONTRIBUTION}
+\begin{itemize}
+   \item Chang-Qi Zhang$^{a}$: Creating and testing library for Openpose foreground 
+   keypoints extraction, PPT author and report author.
+   \item Chen-Hung Hu$^{b}$: QT user interface and doing software libraries integration from
+   other authors$^{ac}$.
+   \item Chien-Yu Lin$^{c}$: implementing foreground/background Segmenter algorism, helping 
+   author$^{b}$ to do system integration and project software structure design.
+\end{itemize}
 
 \begin{thebibliography}{99}
 \bibitem{openpose} Zhe Cao and Gines Hidalgo and Tomas Simon and Shih-En Wei and Yaser Sheikh, Open{P}ose: realtime multi-person 2{D} pose estimation using {P}art {A}ffinity {F}ields
 \bibitem{openpoose-net} Shih-En Wei, Varun Ramakrishna, Takeo Kanade and Yaser Sheikh, Convolutional Pose Machines
-
-% \bibitem{c1} G. O. Young, �Synthetic structure of industrial plastics (Book style with paper title and editor),� 	in Plastics, 2nd ed. vol. 3, J. Peters, Ed.  New York: McGraw-Hill, 1964, pp. 15�64.
-% \bibitem{c2} W.-K. Chen, Linear Networks and Systems (Book style).	Belmont, CA: Wadsworth, 1993, pp. 123�135.
-
-
-
+\bibitem{} Concurrent computation of topological watershed on shared memory parallel machines
+\bibitem{} The Morphological Approach to Segmentation - The Watershed Transformation (S. Beucher and F. Meyer)
+\bibitem{} Topographic distance and watershed lines
+\bibitem{} Watershed Approaches For Color Image Segmentation 
+\bibitem{} Watershed wiki page
+\bibitem{} How to code a nice user-guided foreground extraction algorithm? (Addendum)
 \end{thebibliography}
 
 

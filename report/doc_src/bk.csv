@@ -1,4 +1,4 @@
-image,precision,recall,f_measure,MAE,runtime
+image,precision,recall,fmeasure,MAE,runtime
 1,0.9151,0.8036,0.8558,0.1287,4415
 2,0.9346,0.5528,0.6947,0.1010,1764
 3,0.9845,0.9980,0.9912,0.0091,1329
